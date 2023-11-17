@@ -1,4 +1,4 @@
-import { PageProps } from "../types";
+import { PageProps } from "../../types";
 import { getMakes } from "./makes";
 
 export const autopliusScraper = async ({ browser }: PageProps) => {
