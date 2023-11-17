@@ -19,7 +19,7 @@ export const insertSearch: RequestHandler = async (req, res, next) => {
 
     if (!newSearch) throw Error("Failed to create new search");
 
-    res.status(200).json(newSearch);
+    res.status(201).json(newSearch);
   } catch (error) {
     next(error);
   }
