@@ -13,9 +13,7 @@ export interface DataScraperProps {
   page: Page;
 }
 
-export interface ClassStringProps {
-  dataSite: DataSite;
-}
+export interface ClassStringProps {}
 
 export type MakeData = {
   value: string | null;

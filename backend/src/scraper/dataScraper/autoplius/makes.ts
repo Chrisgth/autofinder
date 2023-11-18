@@ -1,11 +1,12 @@
 import { DataScraperProps, DataSite, MakeData } from "../../types";
-import { getMakeClasses } from "../../utils/classStrings";
+import { getAutopliusClasses } from "../../utils/classStrings";
 
 export const getMakes = async ({ page }: DataScraperProps) => {
   // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
   const dataSite = DataSite.AUTOPLIUS;
+  const { makeClasses } = getAutopliusClasses();
   const makes: MakeData[] = await page.$$eval(
-    getMakeClasses({ dataSite }),
+    makeClasses.dropdownOptions,
     (elements, dataSite) =>
       elements.reduce<Array<MakeData>>((data, e) => {
         if (e.getAttribute("data-badge") !== "0") {

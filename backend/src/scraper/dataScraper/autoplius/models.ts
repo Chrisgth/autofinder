@@ -1,21 +1,18 @@
-import { DataScraperProps, DataSite, ModelData } from "../../types";
-import { getMakeClasses } from "../../utils/classStrings";
+import { DataScraperProps, ModelData } from "../../types";
+import { getAutopliusClasses } from "../../utils/classStrings";
 
 export const getModels = async ({ page }: DataScraperProps) => {
   // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
-  const dataSite = DataSite.AUTOPLIUS;
-  const makeElements = await page.$$(getMakeClasses({ dataSite }));
+  const { modelClasses, makeClasses } = getAutopliusClasses();
+  const makeElements = await page.$$(makeClasses.dropdownOptions);
   const modelData: any[] = [];
 
-  const cookieButton = await page.waitForSelector(
-    "#onetrust-reject-all-handler"
-  );
+  const cookieButton = await page.waitForSelector(modelClasses.cookieReject);
   await cookieButton?.click();
 
-  await page.waitForTimeout(1000);
-  const dropdown = await page.waitForSelector(
-    ".input-select.js-make .display-input.js-placeholder"
-  );
+  //Page has animation delay of 400 ms
+  await page.waitForTimeout(500);
+  const dropdown = await page.waitForSelector(modelClasses.makeDropdown);
 
   try {
     for (const element of makeElements) {
@@ -30,30 +27,27 @@ export const getModels = async ({ page }: DataScraperProps) => {
         await element.scrollIntoView();
         await element.click();
 
-        await page.waitForTimeout(1000);
-
-        const overlay = await page.waitForSelector(
-          ".input-select.js-model .input-overlay"
-        );
+        const overlay = await page.waitForSelector(modelClasses.overlay, {
+          visible: true,
+          timeout: 5000,
+        });
 
         await overlay?.click();
 
         const models = await page.$$eval(
-          ".input-select.js-model .dropdown-options.js-options .dropdown-option",
+          modelClasses.dropdownOptions,
           (elements) =>
             elements.map((e) => ({ test: e.getAttribute("data-title") }))
         );
         await modelData.push(models);
 
-        const clear = await page.waitForSelector(
-          ".input-select.js-make .clear-btn"
-        );
+        const clear = await page.waitForSelector(modelClasses.clearButton);
 
         await clear?.click();
       }
     }
   } catch (error) {
-    console.error("Error fetching models:", error);
+    console.error("Error in model fetching loop:", error);
   }
 
   return modelData;
