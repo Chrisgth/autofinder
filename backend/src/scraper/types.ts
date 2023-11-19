@@ -15,6 +15,11 @@ export interface DataScraperProps {
 
 export interface ClassStringProps {}
 
+export interface TemplateProps {
+  e: Element;
+  dataSite: DataSite;
+}
+
 export type MakeData = {
   value: string | null;
   dataValue: string | null;

@@ -1,11 +1,16 @@
-import { DataScraperProps, ModelData } from "../../types";
-import { getAutopliusClasses } from "../../utils/classStrings";
+import { DataScraperProps, DataSite, ModelData } from "../../types";
+import autopliusClassStrings from "./utils/classStrings";
+import { modelTemplate } from "./utils/templates";
+autopliusClassStrings;
 
 export const getModels = async ({ page }: DataScraperProps) => {
   // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
-  const { modelClasses, makeClasses } = getAutopliusClasses();
+  const { modelClasses, makeClasses } = autopliusClassStrings;
+  const dataSite = DataSite.AUTOPLIUS;
   const makeElements = await page.$$(makeClasses.dropdownOptions);
   const modelData: any[] = [];
+  //Testing purpose splice
+  makeElements.splice(35);
 
   const cookieButton = await page.waitForSelector(modelClasses.cookieReject);
   await cookieButton?.click();
@@ -16,12 +21,15 @@ export const getModels = async ({ page }: DataScraperProps) => {
 
   try {
     for (const element of makeElements) {
-      const dataBadge = await element.evaluate((el) => {
-        return el.getAttribute("data-badge");
+      const { dataBadge, makeDataValue } = await element.evaluate((el) => {
+        return {
+          dataBadge: el.getAttribute("data-badge"),
+          makeDataValue: el.getAttribute("data-value"),
+        };
       });
 
-      if (dataBadge !== "0") {
-        console.log(dataBadge);
+      if (dataBadge !== "0" && makeDataValue) {
+        // console.log(dataBadge);
         await dropdown?.click();
 
         await element.scrollIntoView();
@@ -36,8 +44,51 @@ export const getModels = async ({ page }: DataScraperProps) => {
 
         const models = await page.$$eval(
           modelClasses.dropdownOptions,
-          (elements) =>
-            elements.map((e) => ({ test: e.getAttribute("data-title") }))
+          (elements, makeDataValue, dataSite) =>
+            // If there is an element that has the attribute sub-option in the whole array, exclude any regular option that is followed by a suboption
+            {
+              const suboptionsExist = elements.some((e) => {
+                return e.classList.contains("sub-option");
+              });
+
+              const mapFunction = (
+                arr: Element[],
+                suboptionsExist: boolean
+              ) => {
+                const dataWithListingFormatter = (models: Element[]) => {
+                  return models.reduce<Array<ModelData>>((data, e) => {
+                    if (e.getAttribute("data-badge") !== "0") {
+                      data.push(modelTemplate({ e, dataSite, makeDataValue }));
+                    }
+                    return data;
+                  }, []);
+                };
+                if (!suboptionsExist) {
+                  return dataWithListingFormatter(arr);
+                } else {
+                  const filteredArray = arr.filter((e, i) => {
+                    //If it's the final element return it
+                    if (i === arr.length - 1) {
+                      return e;
+                    }
+                    console.log(arr[i + 1]);
+                    console.log(e);
+                    if (
+                      e.classList.contains("dropdown-option") &&
+                      !e.classList.contains("sub-option") &&
+                      arr[i + 1].classList.contains("sub-option")
+                    ) {
+                      return;
+                    }
+                    return e;
+                  });
+                  return dataWithListingFormatter(filteredArray);
+                }
+              };
+              return mapFunction(elements, suboptionsExist);
+            },
+          makeDataValue,
+          dataSite
         );
         await modelData.push(models);
 
