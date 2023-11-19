@@ -1,4 +1,3 @@
-import { Page } from "puppeteer";
 import { DataScraperProps, DataSite, ModelData } from "../../types";
 import modelEvaluator, {
   ModelEvaluatorProps,
@@ -6,23 +5,18 @@ import modelEvaluator, {
 } from "./functions/modelEvaluator";
 import autopliusClassStrings from "./utils/classStrings";
 import { modelTemplate } from "./utils/templates";
+import { declineAutopliusCookie } from "./functions/declineCookie";
 autopliusClassStrings;
 
 const { modelClasses, makeClasses } = autopliusClassStrings;
-
-export const declineAutopliusCookie = async (page: Page) => {
-  const cookieButton = await page.waitForSelector(modelClasses.cookieReject);
-  await cookieButton?.click();
-
-  //Page has animation delay of 400 ms after cookies are denied
-  await page.waitForTimeout(500);
-};
 
 export const getModels = async ({ page }: DataScraperProps) => {
   // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
   const dataSite = DataSite.AUTOPLIUS;
   const makeElements = await page.$$(makeClasses.dropdownOptions);
   const modelData: ModelData[] = [];
+
+  declineAutopliusCookie(page);
 
   const dropdown = await page.waitForSelector(modelClasses.makeDropdown);
 

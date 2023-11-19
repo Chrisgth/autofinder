@@ -27,7 +27,7 @@ export interface ModelTemplateProps extends TemplateProps {
 export type MakeData = {
   value: string | null;
   dataValue: string | null;
-  count: string | null;
+  count: number | null;
   dataSite?: DataSite;
 };
 
@@ -35,6 +35,6 @@ export type ModelData = {
   makeDataValue: string | null;
   value: string | null;
   dataValue: string | null;
-  count: string | null;
+  count: number | null;
   dataSite?: DataSite;
 };
