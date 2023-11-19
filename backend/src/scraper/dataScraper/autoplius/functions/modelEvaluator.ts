@@ -3,7 +3,6 @@ import { ModelTemplateType } from "../utils/templates";
 
 export interface ModelEvaluatorProps {
   models: Element[];
-  suboptionsExist: boolean;
   dataSite: DataSite;
   makeDataValue: string;
   modelTemplateStr: string;
@@ -11,12 +10,15 @@ export interface ModelEvaluatorProps {
 
 const modelEvaluator = ({
   models,
-  suboptionsExist,
   dataSite,
   makeDataValue,
   modelTemplateStr,
 }: ModelEvaluatorProps) => {
   const modelTemplate = eval(modelTemplateStr) as ModelTemplateType;
+
+  const suboptionsExist = models.some((e) => {
+    return e.classList.contains("sub-option");
+  });
 
   const dataWithListingFormatter = (models: Element[]) => {
     return models.reduce<Array<ModelData>>((data, e) => {

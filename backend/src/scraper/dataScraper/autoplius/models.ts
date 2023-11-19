@@ -1,3 +1,4 @@
+import { Page } from "puppeteer";
 import { DataScraperProps, DataSite, ModelData } from "../../types";
 import modelEvaluator, {
   ModelEvaluatorProps,
@@ -7,20 +8,22 @@ import autopliusClassStrings from "./utils/classStrings";
 import { modelTemplate } from "./utils/templates";
 autopliusClassStrings;
 
-export const getModels = async ({ page }: DataScraperProps) => {
-  // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
-  const { modelClasses, makeClasses } = autopliusClassStrings;
-  const dataSite = DataSite.AUTOPLIUS;
-  const makeElements = await page.$$(makeClasses.dropdownOptions);
-  const modelData: ModelData[] = [];
-  //Testing purpose splice
-  makeElements.splice(35);
+const { modelClasses, makeClasses } = autopliusClassStrings;
 
+export const declineAutopliusCookie = async (page: Page) => {
   const cookieButton = await page.waitForSelector(modelClasses.cookieReject);
   await cookieButton?.click();
 
-  //Page has animation delay of 400 ms
+  //Page has animation delay of 400 ms after cookies are denied
   await page.waitForTimeout(500);
+};
+
+export const getModels = async ({ page }: DataScraperProps) => {
+  // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
+  const dataSite = DataSite.AUTOPLIUS;
+  const makeElements = await page.$$(makeClasses.dropdownOptions);
+  const modelData: ModelData[] = [];
+
   const dropdown = await page.waitForSelector(modelClasses.makeDropdown);
 
   try {
@@ -60,13 +63,8 @@ export const getModels = async ({ page }: DataScraperProps) => {
           ) =>
             // If there is an element that has the attribute sub-option in the whole array, exclude any regular option that is followed by a suboption
             {
-              const suboptionsExist = elements.some((e) => {
-                return e.classList.contains("sub-option");
-              });
-
               const modelEvaluatorProps: ModelEvaluatorProps = {
                 models: elements,
-                suboptionsExist,
                 dataSite,
                 makeDataValue,
                 modelTemplateStr,
@@ -75,6 +73,7 @@ export const getModels = async ({ page }: DataScraperProps) => {
               const modelEvaluator = eval(
                 modelEvaluatorStr
               ) as ModelEvaluatorType;
+
               return modelEvaluator(modelEvaluatorProps);
             },
           makeDataValue,
