@@ -20,6 +20,10 @@ export interface TemplateProps {
   dataSite: DataSite;
 }
 
+export interface ModelTemplateProps extends TemplateProps {
+  makeDataValue: string;
+}
+
 export type MakeData = {
   value: string | null;
   dataValue: string | null;

@@ -14,13 +14,14 @@
 //     }, []),
 //   dataSite
 
-import { MakeData, ModelData, TemplateProps } from "../../../types";
+import {
+  MakeData,
+  ModelData,
+  ModelTemplateProps,
+  TemplateProps,
+} from "../../../types";
 
 // );
-
-interface ModelTemplateProps extends TemplateProps {
-  makeDataValue: string;
-}
 
 export const modelTemplate = ({
   e,
@@ -44,3 +45,6 @@ export const makeTemplate = ({ e, dataSite }: TemplateProps): MakeData => {
     dataSite: dataSite,
   };
 };
+
+export type ModelTemplateType = typeof modelTemplate;
+export type MakeTemplateType = typeof makeTemplate;

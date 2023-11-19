@@ -1,4 +1,8 @@
 import { DataScraperProps, DataSite, ModelData } from "../../types";
+import modelEvaluator, {
+  ModelEvaluatorProps,
+  ModelEvaluatorType,
+} from "./functions/modelEvaluator";
 import autopliusClassStrings from "./utils/classStrings";
 import { modelTemplate } from "./utils/templates";
 autopliusClassStrings;
@@ -8,7 +12,7 @@ export const getModels = async ({ page }: DataScraperProps) => {
   const { modelClasses, makeClasses } = autopliusClassStrings;
   const dataSite = DataSite.AUTOPLIUS;
   const makeElements = await page.$$(makeClasses.dropdownOptions);
-  const modelData: any[] = [];
+  const modelData: ModelData[] = [];
   //Testing purpose splice
   makeElements.splice(35);
 
@@ -42,55 +46,43 @@ export const getModels = async ({ page }: DataScraperProps) => {
 
         await overlay?.click();
 
+        const modelTemplateStr = `${modelTemplate}`;
+        const modelEvaluatorStr = `${modelEvaluator}`;
+
         const models = await page.$$eval(
           modelClasses.dropdownOptions,
-          (elements, makeDataValue, dataSite) =>
+          (
+            elements,
+            makeDataValue,
+            dataSite,
+            modelTemplateStr,
+            modelEvaluatorStr
+          ) =>
             // If there is an element that has the attribute sub-option in the whole array, exclude any regular option that is followed by a suboption
             {
               const suboptionsExist = elements.some((e) => {
                 return e.classList.contains("sub-option");
               });
 
-              const mapFunction = (
-                arr: Element[],
-                suboptionsExist: boolean
-              ) => {
-                const dataWithListingFormatter = (models: Element[]) => {
-                  return models.reduce<Array<ModelData>>((data, e) => {
-                    if (e.getAttribute("data-badge") !== "0") {
-                      data.push(modelTemplate({ e, dataSite, makeDataValue }));
-                    }
-                    return data;
-                  }, []);
-                };
-                if (!suboptionsExist) {
-                  return dataWithListingFormatter(arr);
-                } else {
-                  const filteredArray = arr.filter((e, i) => {
-                    //If it's the final element return it
-                    if (i === arr.length - 1) {
-                      return e;
-                    }
-                    console.log(arr[i + 1]);
-                    console.log(e);
-                    if (
-                      e.classList.contains("dropdown-option") &&
-                      !e.classList.contains("sub-option") &&
-                      arr[i + 1].classList.contains("sub-option")
-                    ) {
-                      return;
-                    }
-                    return e;
-                  });
-                  return dataWithListingFormatter(filteredArray);
-                }
+              const modelEvaluatorProps: ModelEvaluatorProps = {
+                models: elements,
+                suboptionsExist,
+                dataSite,
+                makeDataValue,
+                modelTemplateStr,
               };
-              return mapFunction(elements, suboptionsExist);
+
+              const modelEvaluator = eval(
+                modelEvaluatorStr
+              ) as ModelEvaluatorType;
+              return modelEvaluator(modelEvaluatorProps);
             },
           makeDataValue,
-          dataSite
+          dataSite,
+          modelTemplateStr,
+          modelEvaluatorStr
         );
-        await modelData.push(models);
+        await modelData.push(...models);
 
         const clear = await page.waitForSelector(modelClasses.clearButton);
 
