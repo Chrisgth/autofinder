@@ -4,7 +4,7 @@ import { MakeTemplateType, makeTemplate } from "./utils/templates";
 
 export const getMakes = async ({ page }: DataScraperProps) => {
   // Datasite is seperated and passed as an argument because puppeteer runs into issues if done internally
-  const dataSite = DataSite.AUTOPLIUS;
+  const dataSite = DataSite.AUTOGIDAS;
   const { makeClasses } = autogidasClassStrings;
   const makeTemplateStr = `${makeTemplate}`;
 
@@ -15,9 +15,9 @@ export const getMakes = async ({ page }: DataScraperProps) => {
         const countString = e.querySelector(
           ".value-records-count"
         )?.textContent;
+        const count = countString ? parseInt(countString) : 0;
 
-        if (countString && !isNaN(parseInt(countString))) {
-          const count = parseInt(countString);
+        if (count) {
           const func = eval(makeTemplate) as MakeTemplateType;
           data.push(func({ e, dataSite, count }));
         }
