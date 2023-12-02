@@ -9,6 +9,15 @@ app.use(express.json());
 
 app.use("/api/searches", searchesRouter);
 
+app.get("/test", async (req, res, next) => {
+  try {
+    const data = await dataScrape();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((req, res, next) => {
   next(createHttpError(404, "Page not found"));
 });
@@ -24,7 +33,5 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   }
   res.status(errorStatus).json({ error: errorMessage });
 });
-
-dataScrape();
 
 export default app;

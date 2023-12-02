@@ -16,9 +16,7 @@ export const getModels = async ({ page }: DataScraperProps) => {
   const makeElements = await page.$$(makeClasses.dropdownOptions);
   const modelData: ModelData[] = [];
 
-  declineAutopliusCookie(page);
-
-  const dropdown = await page.waitForSelector(modelClasses.makeDropdown);
+  await declineAutopliusCookie(page);
 
   try {
     for (const element of makeElements) {
@@ -31,6 +29,11 @@ export const getModels = async ({ page }: DataScraperProps) => {
 
       if (dataBadge !== "0" && makeDataValue) {
         // console.log(dataBadge);
+        const dropdown = await page.waitForSelector(modelClasses.makeDropdown, {
+          visible: true,
+          timeout: 5000,
+        });
+
         await dropdown?.click();
 
         await element.scrollIntoView();

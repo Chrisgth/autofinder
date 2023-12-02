@@ -6,11 +6,11 @@ export const dataScrape = async () => {
   try {
     const browser = await puppeteer.launch({ headless: false });
 
-    const autogidasData = await autogidasScraper({ browser });
+    // const autogidasData = await autogidasScraper({ browser });
 
-    // const autopliusData = await autopliusScraper({ browser });
+    const autopliusData = await autopliusScraper({ browser });
 
-    console.log(autogidasData);
+    return autopliusData;
     // browser.close();
   } catch (error) {
     console.error("Error during datascraping:", error);

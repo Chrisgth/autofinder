@@ -32,7 +32,7 @@ export const modelTemplate = ({
     makeDataValue,
     value: e.getAttribute("data-title"),
     dataValue: e.getAttribute("data-value"),
-    count: e.getAttribute("data-badge"),
+    count: parseInt(e.getAttribute("data-badge")!),
     dataSite: dataSite,
   };
 };
@@ -41,7 +41,7 @@ export const makeTemplate = ({ e, dataSite }: TemplateProps): MakeData => {
   return {
     value: e.getAttribute("data-title"),
     dataValue: e.getAttribute("data-value"),
-    count: e.getAttribute("data-badge"),
+    count: parseInt(e.getAttribute("data-badge")!),
     dataSite: dataSite,
   };
 };

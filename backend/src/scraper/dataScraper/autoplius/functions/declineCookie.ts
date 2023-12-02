@@ -8,5 +8,5 @@ export const declineAutopliusCookie = async (page: Page) => {
   await cookieButton?.click();
 
   //Page has animation delay of 400 ms after cookies are denied
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(3000);
 };
