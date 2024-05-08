@@ -1,16 +1,18 @@
 import puppeteer from "puppeteer";
-// import { autopliusScraper } from "./autoplius/page";
+import { autopliusScraper } from "./autoplius/page";
 import { autogidasScraper } from "./autogidas/page";
 
 export const dataScrape = async () => {
   try {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser1 = await puppeteer.launch({ headless: false });
+    const browser2 = await puppeteer.launch({ headless: false });
 
-    const autogidasData = await autogidasScraper({ browser });
+    const [autogidasData, autopliusData] = await Promise.all([
+      autogidasScraper({ browser: browser1 }),
+      autopliusScraper({ browser: browser2 }),
+    ]);
 
-    // const autopliusData = await autopliusScraper({ browser });
-
-    return autogidasData;
+    return { autogidasData, autopliusData };
     // browser.close();
   } catch (error) {
     console.error("Error during datascraping:", error);

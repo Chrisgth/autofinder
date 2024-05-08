@@ -78,11 +78,10 @@ export const getModels = async ({ page }: DataScraperProps) => {
           modelEvaluatorStr
         );
         await modelData.push(...models);
-
-        console.log(models);
       }
     }
   } catch (error) {
     console.log(error);
   }
+  return modelData;
 };
