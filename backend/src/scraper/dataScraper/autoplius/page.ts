@@ -6,9 +6,9 @@ export const autopliusScraper = async ({ browser }: PageProps) => {
   const page = await browser.newPage();
   await page.goto("https://en.autoplius.lt/");
 
-  // const makes = await getMakes({ page });
+  const makes = await getMakes({ page });
   const models = await getModels({ page });
 
   // await page.close();
-  return models;
+  return { makes, models };
 };

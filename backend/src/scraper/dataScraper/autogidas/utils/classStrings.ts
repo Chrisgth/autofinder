@@ -6,8 +6,9 @@ type AutogidasModelClassStrings = {
   cookieAccept: string;
   makeDropdown: string;
   overlay: string;
-  dropdownOptions: string;
   clearButton: string;
+  dropdownOptions: string;
+  valueRecordsCount: string;
 };
 
 type AutogidasClassStrings = {
@@ -21,11 +22,11 @@ const autogidasClassStrings: AutogidasClassStrings = {
   },
   modelClasses: {
     cookieAccept: "#onetrust-accept-btn-handler",
-    makeDropdown: ".input-select.js-make .display-input.js-placeholder",
-    overlay: ".input-select.js-model .input-overlay",
-    dropdownOptions:
-      ".input-select.js-model .dropdown-options.js-options .dropdown-option",
+    makeDropdown: ".search-field-input-f_1 .title",
+    overlay: ".overlay",
     clearButton: ".input-select.js-make .clear-btn",
+    dropdownOptions: ".search-field-input-f_model_14 .values .value",
+    valueRecordsCount: ".value-records-count",
   },
 };
 
