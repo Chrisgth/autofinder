@@ -34,7 +34,9 @@ export const modelTemplate = ({
     makeDataValue,
     value: e.getAttribute("data-title"),
     dataValue: e.getAttribute("data-value"),
-    count: parseInt(e.getAttribute("data-badge")!),
+    count: parseInt(
+      e.querySelector(".value-records-count")?.textContent || "0"
+    ),
     dataSite: dataSite,
   };
 };

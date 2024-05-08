@@ -1,11 +1,17 @@
-import { DataScraperProps, ModelData } from "../../types";
+import { DataScraperProps, DataSite, ModelData } from "../../types";
+import modelEvaluator, {
+  ModelEvaluatorProps,
+  ModelEvaluatorType,
+} from "./functions/modelEvaluator";
 import { acceptAutogidasCookie } from "./functions/acceptCookie";
 import autogidasClassStrings from "./utils/classStrings";
+import { modelTemplate } from "./utils/templates";
 
 export const getModels = async ({ page }: DataScraperProps) => {
   const { modelClasses, makeClasses } = autogidasClassStrings;
   const makeElements = await page.$$(makeClasses.dropdownOptions);
   const modelData: ModelData[] = [];
+  const dataSite = DataSite.AUTOGIDAS;
   await acceptAutogidasCookie(page);
 
   const overlay = await page.waitForSelector(modelClasses.overlay, {
@@ -15,7 +21,6 @@ export const getModels = async ({ page }: DataScraperProps) => {
   await overlay?.evaluate((el) => {
     el.remove();
   });
-  console.log("overlayremoved");
 
   try {
     for (const element of makeElements) {
@@ -40,16 +45,39 @@ export const getModels = async ({ page }: DataScraperProps) => {
         await element.scrollIntoView();
         await element.click();
 
-        const models = await page.$$eval(modelClasses.dropdownOptions, (el) => {
-          const map = el.map((e) => {
-            return {
-              // valueRecordsCount: e.querySelector(modelClasses.valueRecordsCount)
-              //   ?.textContent,
-              dataValue: e.getAttribute("data-value"),
-            };
-          });
-          return map;
-        });
+        const modelTemplateStr = `${modelTemplate}`;
+        const modelEvaluatorStr = `${modelEvaluator}`;
+
+        const models = await page.$$eval(
+          modelClasses.dropdownOptions,
+          (
+            elements,
+            makeDataValue,
+            dataSite,
+            modelTemplateStr,
+            modelEvaluatorStr
+          ) =>
+            // If there is an element that has the attribute sub-option in the whole array, exclude any regular option that is followed by a suboption
+            {
+              const modelEvaluatorProps: ModelEvaluatorProps = {
+                models: elements,
+                dataSite,
+                makeDataValue,
+                modelTemplateStr,
+              };
+
+              const modelEvaluator = new Function(
+                "return " + modelEvaluatorStr
+              )() as ModelEvaluatorType;
+
+              return modelEvaluator(modelEvaluatorProps);
+            },
+          makeDataValue,
+          dataSite,
+          modelTemplateStr,
+          modelEvaluatorStr
+        );
+        await modelData.push(...models);
 
         console.log(models);
       }
