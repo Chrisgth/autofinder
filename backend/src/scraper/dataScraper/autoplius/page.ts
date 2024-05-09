@@ -1,8 +1,10 @@
-import { PageProps } from "../../types";
+import { PageProps, RawSiteData } from "../../types";
 import { getMakes } from "./makes";
 import { getModels } from "./models";
 
-export const autopliusScraper = async ({ browser }: PageProps) => {
+export const autopliusScraper = async ({
+  browser,
+}: PageProps): Promise<RawSiteData> => {
   const page = await browser.newPage();
   await page.goto("https://en.autoplius.lt/");
 

@@ -38,3 +38,13 @@ export type ModelData = {
   count: number | null;
   dataSite?: DataSite;
 };
+
+export type RawSiteData = {
+  makes: MakeData[];
+  models: ModelData[];
+};
+
+export type RawScraperData = {
+  autogidasData: RawSiteData;
+  autopliusData: RawSiteData;
+};
