@@ -14,6 +14,6 @@ const modelSchema = new Schema(
   { timestamps: false }
 );
 
-type Model = InferSchemaType<typeof modelSchema>;
+export type Model = InferSchemaType<typeof modelSchema>;
 
 export default model<Model>("models", modelSchema);

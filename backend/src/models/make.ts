@@ -13,6 +13,6 @@ const makeSchema = new Schema(
   { timestamps: false }
 );
 
-type Make = InferSchemaType<typeof makeSchema>;
+export type Make = InferSchemaType<typeof makeSchema>;
 
 export default model<Make>("makes", makeSchema);

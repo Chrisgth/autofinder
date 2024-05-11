@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import searchesRouter from "./routes/search";
 import scraperRouter from "./routes/scraper";
+import dataRouter from "./routes/data";
 import createHttpError, { isHttpError } from "http-errors";
-import { dataScrape } from "./scraper/dataScraper/scraper";
 
 const app = express();
 
@@ -11,6 +11,8 @@ app.use(express.json());
 app.use("/api/searches", searchesRouter);
 
 app.use("/api/scraper", scraperRouter);
+
+app.use("/api/data", dataRouter);
 
 // app.get("/test", async (req, res, next) => {
 //   try {
