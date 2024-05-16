@@ -1,21 +1,22 @@
 import { Make } from "../models/make";
 import { Model } from "../models/model";
 import { DataSite } from "../scraper/types";
-import { MakeWithModels } from "../utils/types";
+import { CombinedTotals, MakeWithModels } from "../utils/types";
 type RawScraperData = {
   makes: Make[];
   models: Model[];
 };
 
-type CompiledData = {
+type FormattedData = {
   autogidasData: MakeWithModels[];
   autopliusData: MakeWithModels[];
-  combinedData?: MakeWithModels[];
+  combinedData: CombinedTotals[];
 };
 
-export const formatIndividualSiteData = (
-  makesWithModels: MakeWithModels[]
-): CompiledData => {
+export const formatData = (
+  makesWithModels: MakeWithModels[],
+  combinedData: CombinedTotals[]
+): FormattedData => {
   return {
     autogidasData: makesWithModels.filter((e) => {
       return e.dataSite === DataSite.AUTOGIDAS;
@@ -23,5 +24,6 @@ export const formatIndividualSiteData = (
     autopliusData: makesWithModels.filter((e) => {
       return e.dataSite === DataSite.AUTOPLIUS;
     }),
+    combinedData,
   };
 };
