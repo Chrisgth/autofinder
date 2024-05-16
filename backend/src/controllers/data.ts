@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import MakeModel from "../models/make";
 import ModelModel from "../models/model";
-import { formatRawScraperData } from "../utils/formatRawScraperData";
+import { formatRawScraperData } from "../functions/formatRawScraperData";
 
 export const getFormattedData: RequestHandler = async (req, res, next) => {
   try {
