@@ -1,14 +1,40 @@
 import { RequestHandler } from "express";
 import MakeModel from "../models/make";
 import ModelModel from "../models/model";
-import { formatRawScraperData } from "../functions/formatRawScraperData";
+import { formatIndividualSiteData } from "../functions/formatIndividualSiteData";
+import { MakeWithModels } from "../utils/types";
 
 export const getFormattedData: RequestHandler = async (req, res, next) => {
   try {
-    const makes = await MakeModel.find({}).sort({ value: 1 });
-    const models = await ModelModel.find({}).sort({ value: 1 });
+    const makesWithModels: MakeWithModels[] = await MakeModel.aggregate([
+      {
+        $lookup: {
+          from: "models",
+          let: { makeDataSite: "$dataSite", makeDataValue: "$dataValue" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$dataSite", "$$makeDataSite"] },
+                    { $eq: ["$makeDataValue", "$$makeDataValue"] },
+                  ],
+                },
+              },
+            },
+            {
+              $sort: { value: 1 },
+            },
+          ],
+          as: "models",
+        },
+      },
+      {
+        $sort: { value: 1 },
+      },
+    ]);
 
-    const formattedData = formatRawScraperData({ makes, models });
+    const formattedData = formatIndividualSiteData(makesWithModels);
     if (!formattedData) throw new Error("Error formatting raw scraper data");
 
     res.status(200).json(formattedData);
