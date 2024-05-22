@@ -18,10 +18,36 @@ export const runScraper: RequestHandler = async (req, res, next) => {
     await MakeModel.deleteMany({}, { session });
     await ModelModel.deleteMany({}, { session });
 
-    const makes: MakeData[] = await MakeModel.insertMany([
+    const makes: MakeData[] = [
       ...rawScraperData.autogidasData.makes,
       ...rawScraperData.autopliusData.makes,
-    ]);
+    ];
+    const commonStrings = ["kita", "other"];
+    makes.forEach((e, i) => {
+      if (
+        commonStrings.some((string) => e.value?.toLowerCase().includes(string))
+      ) {
+        console.log("some");
+        const commonMake = makes.find((el, index) => {
+          if (
+            index !== i &&
+            commonStrings.some((string) =>
+              el.value?.toLowerCase().includes(string)
+            )
+          ) {
+            makes[index].commonValue = e.value;
+            return el;
+          }
+        });
+        if (commonMake) {
+          console.log(e, commonMake);
+          makes[i].commonValue = commonMake.value;
+        }
+      }
+      return;
+    });
+    await MakeModel.insertMany(makes);
+
     if (!makes || makes.length === 0)
       throw new Error("Failed to insert makes from scraped data");
 

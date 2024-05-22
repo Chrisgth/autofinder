@@ -29,6 +29,7 @@ export type MakeData = {
   dataValue: string | null;
   count: number | null;
   dataSite?: DataSite;
+  commonValue?: string | null;
 };
 
 export type ModelData = {
@@ -37,6 +38,7 @@ export type ModelData = {
   dataValue: string | null;
   count: number | null;
   dataSite?: DataSite;
+  commonValue?: string | null;
 };
 
 export type RawSiteData = {
