@@ -57,9 +57,14 @@ export const combinedDataPipeline: PipelineStage[] = [
   },
   {
     $group: {
-      _id: "$value",
-      value: {
-        $first: "$value",
+      _id: {
+        $cond: {
+          if: {
+            $ne: ["$commonValue", null],
+          },
+          then: "$commonValue",
+          else: "$value",
+        },
       },
       totalCount: {
         $sum: "$count",

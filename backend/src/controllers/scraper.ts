@@ -29,10 +29,12 @@ export const runScraper: RequestHandler = async (req, res, next) => {
     if (!makes || makes.length === 0)
       throw new Error("Failed to insert makes from scraped data");
 
-    const models: ModelData[] = await ModelModel.insertMany([
+    const models: ModelData[] = [
       ...rawScraperData.autogidasData.models,
       ...rawScraperData.autopliusData.models,
-    ]);
+    ];
+
+    await ModelModel.insertMany(models);
     if (!models || models.length === 0)
       throw new Error("Failed to insert models from scraped data");
 
