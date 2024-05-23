@@ -5,6 +5,7 @@ import MakeModel from "../models/make";
 import ModelModel from "../models/model";
 import mongoose from "mongoose";
 import { findCommonValues } from "../functions/findCommonValues";
+import createHttpError from "http-errors";
 
 export const runScraper: RequestHandler = async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -13,12 +14,11 @@ export const runScraper: RequestHandler = async (req, res, next) => {
     const rawScraperData = await dataScrape();
 
     if (!rawScraperData) {
-      throw new Error("No data retrieved from scraper");
+      throw createHttpError(404, "No data retrieved from scraper");
     }
 
     await MakeModel.deleteMany({}, { session });
     await ModelModel.deleteMany({}, { session });
-
     const makes: MakeData[] = [
       ...rawScraperData.autogidasData.makes,
       ...rawScraperData.autopliusData.makes,
@@ -27,7 +27,7 @@ export const runScraper: RequestHandler = async (req, res, next) => {
     await MakeModel.insertMany(makes);
 
     if (!makes || makes.length === 0)
-      throw new Error("Failed to insert makes from scraped data");
+      throw createHttpError(400, "Failed to insert makes from scraped data");
 
     const models: ModelData[] = [
       ...rawScraperData.autogidasData.models,
@@ -37,7 +37,7 @@ export const runScraper: RequestHandler = async (req, res, next) => {
 
     await ModelModel.insertMany(models);
     if (!models || models.length === 0)
-      throw new Error("Failed to insert models from scraped data");
+      throw createHttpError(400, "Failed to insert models from scraped data");
 
     await session.commitTransaction();
 

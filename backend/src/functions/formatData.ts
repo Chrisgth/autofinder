@@ -1,11 +1,5 @@
-import { Make } from "../models/make";
-import { Model } from "../models/model";
 import { DataSite } from "../scraper/types";
 import { CombinedTotals, MakeWithModels } from "../utils/types";
-type RawScraperData = {
-  makes: Make[];
-  models: Model[];
-};
 
 type FormattedData = {
   autogidasData: MakeWithModels[];
