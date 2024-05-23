@@ -4,7 +4,7 @@ import { MakeData, ModelData } from "../scraper/types";
 import MakeModel from "../models/make";
 import ModelModel from "../models/model";
 import mongoose from "mongoose";
-import { findCommonMakes } from "../functions/findCommonMakes";
+import { findCommonValues } from "../functions/findCommonValues";
 
 export const runScraper: RequestHandler = async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -23,7 +23,7 @@ export const runScraper: RequestHandler = async (req, res, next) => {
       ...rawScraperData.autogidasData.makes,
       ...rawScraperData.autopliusData.makes,
     ];
-    findCommonMakes(makes);
+    findCommonValues(makes);
     await MakeModel.insertMany(makes);
 
     if (!makes || makes.length === 0)
@@ -33,6 +33,7 @@ export const runScraper: RequestHandler = async (req, res, next) => {
       ...rawScraperData.autogidasData.models,
       ...rawScraperData.autopliusData.models,
     ];
+    findCommonValues(models);
 
     await ModelModel.insertMany(models);
     if (!models || models.length === 0)
