@@ -22,7 +22,10 @@ const modelEvaluator = ({
 
   const dataWithListingFormatter = (models: Element[]) => {
     return models.reduce<Array<ModelData>>((data, e) => {
-      if (e.querySelector(".value-records-count")?.textContent !== "0") {
+      if (
+        e.querySelector(".value-records-count")?.textContent !== "0" &&
+        !e.getAttribute("data-title")?.includes("Visi ")
+      ) {
         data.push(modelTemplate({ e, dataSite, makeDataValue }));
       }
       return data;
@@ -36,8 +39,6 @@ const modelEvaluator = ({
     if (i === models.length - 1) {
       return e;
     }
-    console.log(models[i + 1]);
-    console.log(e);
     if (
       e.classList.contains("main") &&
       !e.classList.contains("sub") &&
