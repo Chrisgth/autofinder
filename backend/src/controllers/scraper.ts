@@ -7,7 +7,15 @@ import mongoose from "mongoose";
 import { findCommonValues } from "../functions/findCommonValues";
 import createHttpError from "http-errors";
 
+let scraperIsRunning = false;
+
 export const runScraper: RequestHandler = async (req, res, next) => {
+  if (scraperIsRunning) {
+    return res
+      .status(429)
+      .send("Another request is being processed. Please try again later.");
+  }
+  scraperIsRunning = true;
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -52,4 +60,5 @@ export const runScraper: RequestHandler = async (req, res, next) => {
   } finally {
     session.endSession();
   }
+  scraperIsRunning = false;
 };
