@@ -1,4 +1,4 @@
-import { MakeData, ModelData } from "../scraper/types";
+import { MakeData, ModelData } from "../scraper/dataScraper/types";
 
 const commonStrings = ["kita", "other"];
 export const findCommonValues = (objects: MakeData[] | ModelData[]) => {

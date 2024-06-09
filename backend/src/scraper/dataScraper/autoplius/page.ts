@@ -1,4 +1,4 @@
-import { PageProps, RawSiteData } from "../../types";
+import { PageProps, RawSiteData } from "../types";
 import { getMakes } from "./makes";
 import { getModels } from "./models";
 

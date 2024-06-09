@@ -1,4 +1,4 @@
-import { DataSite } from "../scraper/types";
+import { DataSite } from "../scraper/dataScraper/types";
 import { CombinedTotals, MakeWithModels } from "../utils/types";
 
 type FormattedData = {

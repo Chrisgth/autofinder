@@ -3,6 +3,8 @@ import * as ScraperController from "../controllers/scraper";
 
 const router = express.Router();
 
-router.get("/run", ScraperController.runScraper);
+router.get("/runDataScraper", ScraperController.runDataScraper);
+
+router.get("/runSearchScraper", ScraperController.runSearchScraper);
 
 export default router;

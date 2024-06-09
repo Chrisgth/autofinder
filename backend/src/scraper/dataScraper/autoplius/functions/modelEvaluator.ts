@@ -1,4 +1,4 @@
-import { DataSite, ModelData } from "../../../types";
+import { DataSite, ModelData } from "../../types";
 import { ModelTemplateType } from "../utils/templates";
 
 export interface ModelEvaluatorProps {

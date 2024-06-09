@@ -19,7 +19,7 @@ import {
   ModelData,
   ModelTemplateProps,
   TemplateProps,
-} from "../../../types";
+} from "../../types";
 
 // );
 

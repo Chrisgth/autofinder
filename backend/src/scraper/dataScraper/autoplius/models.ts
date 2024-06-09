@@ -1,4 +1,4 @@
-import { DataScraperProps, DataSite, ModelData } from "../../types";
+import { DataScraperProps, DataSite, ModelData } from "../types";
 import modelEvaluator, {
   ModelEvaluatorProps,
   ModelEvaluatorType,

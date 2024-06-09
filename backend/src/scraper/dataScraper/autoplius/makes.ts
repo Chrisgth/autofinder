@@ -1,4 +1,4 @@
-import { DataScraperProps, DataSite, MakeData } from "../../types";
+import { DataScraperProps, DataSite, MakeData } from "../types";
 import autopliusClassStrings from "./utils/classStrings";
 import { MakeTemplateType, makeTemplate } from "./utils/templates";
 

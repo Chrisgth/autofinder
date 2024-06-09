@@ -1,4 +1,4 @@
-import { DataScraperProps, DataSite, MakeData } from "../../types";
+import { DataScraperProps, DataSite, MakeData } from "../types";
 import autogidasClassStrings from "./utils/classStrings";
 import { MakeTemplateType, makeTemplate } from "./utils/templates";
 

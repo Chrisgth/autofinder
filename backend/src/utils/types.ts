@@ -24,3 +24,8 @@ export interface CommonValuesUpdateBody {
   updateData: Partial<Make | Model>;
   schemaType: SchemaType;
 }
+
+export interface SearchScraperBody {
+  makeValue: string;
+  modelValue?: string;
+}

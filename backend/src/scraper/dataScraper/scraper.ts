@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import { autopliusScraper } from "./autoplius/page";
 import { autogidasScraper } from "./autogidas/page";
-import { RawScraperData } from "../types";
+import { RawScraperData } from "./types";
 
 export const dataScrape = async (): Promise<RawScraperData | undefined> => {
   try {

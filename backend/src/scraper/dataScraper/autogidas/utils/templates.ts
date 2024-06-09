@@ -19,7 +19,7 @@ import {
   ModelData,
   ModelTemplateProps,
   TemplateProps,
-} from "../../../types";
+} from "../../types";
 
 export interface AutogidasMakeTemplateProps extends TemplateProps {
   count: number;

@@ -1,15 +1,16 @@
 import { RequestHandler } from "express";
 import { dataScrape } from "../scraper/dataScraper/scraper";
-import { MakeData, ModelData } from "../scraper/types";
+import { MakeData, ModelData } from "../scraper/dataScraper/types";
 import MakeModel from "../models/make";
 import ModelModel from "../models/model";
 import mongoose from "mongoose";
 import { findCommonValues } from "../functions/findCommonValues";
 import createHttpError from "http-errors";
+import { SearchScraperBody } from "../utils/types";
 
 let scraperIsRunning = false;
 
-export const runScraper: RequestHandler = async (req, res, next) => {
+export const runDataScraper: RequestHandler = async (req, res, next) => {
   if (scraperIsRunning) {
     return res
       .status(429)
@@ -61,4 +62,17 @@ export const runScraper: RequestHandler = async (req, res, next) => {
     session.endSession();
   }
   scraperIsRunning = false;
+};
+
+export const runSearchScraper: RequestHandler<
+  unknown,
+  unknown,
+  SearchScraperBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const vehicleValues = req.body;
+  } catch (error) {
+    next(error);
+  }
 };
