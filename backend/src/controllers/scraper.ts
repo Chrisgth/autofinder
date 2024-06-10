@@ -90,17 +90,13 @@ export const runSearchScraper: RequestHandler<
     );
 
     if (modelValue) {
-      const autogidasModel = await ModelModel.find({
+      modelData = await ModelModel.find({
         $or: [
           { value: modelValue, makeDataValue: autogidasMakeData?.dataValue },
           {
             commonValue: modelValue,
             makeDataValue: autogidasMakeData?.dataValue,
           },
-        ],
-      });
-      const autopliusModel = await ModelModel.find({
-        $or: [
           { value: modelValue, makeDataValue: autopliusMakeData?.dataValue },
           {
             commonValue: modelValue,
@@ -108,12 +104,11 @@ export const runSearchScraper: RequestHandler<
           },
         ],
       });
-      if (!autopliusModel.length && !autogidasModel.length)
+      if (!modelData || !modelData.length)
         throw createHttpError(
           404,
           "No models found with given value within scraped data"
         );
-      modelData = [autogidasModel, autopliusModel];
     }
     res.status(200).json({
       body: req.body,
