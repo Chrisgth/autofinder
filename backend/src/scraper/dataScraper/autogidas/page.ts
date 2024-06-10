@@ -11,6 +11,6 @@ export const autogidasScraper = async ({
   const makes = await getMakes({ page });
   const models = await getModels({ page });
 
-  // await page.close();
+  await page.close();
   return { makes, models };
 };

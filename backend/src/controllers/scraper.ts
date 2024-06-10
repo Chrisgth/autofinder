@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { dataScrape } from "../scraper/dataScraper/scraper";
-import { MakeData, ModelData } from "../scraper/dataScraper/types";
+import { DataSite, MakeData, ModelData } from "../scraper/dataScraper/types";
 import MakeModel from "../models/make";
-import ModelModel from "../models/model";
+import ModelModel, { Model } from "../models/model";
 import mongoose from "mongoose";
 import { findCommonValues } from "../functions/findCommonValues";
 import createHttpError from "http-errors";
@@ -70,8 +70,56 @@ export const runSearchScraper: RequestHandler<
   SearchScraperBody,
   unknown
 > = async (req, res, next) => {
+  const { makeValue, modelValue } = req.body;
   try {
-    const vehicleValues = req.body;
+    let modelData;
+    const makeData = await MakeModel.find({
+      $or: [{ value: makeValue }, { commonValue: makeValue }],
+    });
+    if (!makeData || !makeData.length)
+      throw createHttpError(
+        404,
+        "No makes found with given value within scraped data"
+      );
+
+    const autogidasMakeData = makeData.find(
+      (data) => data.dataSite === DataSite.AUTOGIDAS
+    );
+    const autopliusMakeData = makeData.find(
+      (data) => data.dataSite === DataSite.AUTOPLIUS
+    );
+
+    if (modelValue) {
+      const autogidasModel = await ModelModel.find({
+        $or: [
+          { value: modelValue, makeDataValue: autogidasMakeData?.dataValue },
+          {
+            commonValue: modelValue,
+            makeDataValue: autogidasMakeData?.dataValue,
+          },
+        ],
+      });
+      const autopliusModel = await ModelModel.find({
+        $or: [
+          { value: modelValue, makeDataValue: autopliusMakeData?.dataValue },
+          {
+            commonValue: modelValue,
+            makeDataValue: autopliusMakeData?.dataValue,
+          },
+        ],
+      });
+      if (!autopliusModel.length && !autogidasModel.length)
+        throw createHttpError(
+          404,
+          "No models found with given value within scraped data"
+        );
+      modelData = [autogidasModel, autopliusModel];
+    }
+    res.status(200).json({
+      body: req.body,
+      makes: makeData,
+      models: modelData,
+    });
   } catch (error) {
     next(error);
   }
