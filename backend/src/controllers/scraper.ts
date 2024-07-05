@@ -138,7 +138,7 @@ export const runSearchScraper: RequestHandler<
       },
     };
 
-    const searchData = searchScrape(searchScraperParams);
+    const searchData = await searchScrape(searchScraperParams);
 
     res.status(200).json({
       body: req.body,
