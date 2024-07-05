@@ -1,11 +1,14 @@
 import puppeteer from "puppeteer";
 import { autogidasScraper } from "./autogidas/page";
 import { autopliusScraper } from "./autoplius/page";
+import { SearchScraperParams } from "./types";
 
-export const dataScrape = async () => {
+export const searchScrape = async (searchParams: SearchScraperParams) => {
   try {
     const browser1 = await puppeteer.launch({ headless: false });
     const browser2 = await puppeteer.launch({ headless: false });
+
+    console.log(searchParams);
 
     const [autogidasData, autopliusData] = await Promise.all([
       autogidasScraper({ browser: browser1 }),

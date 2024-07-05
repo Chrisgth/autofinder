@@ -7,6 +7,8 @@ import mongoose from "mongoose";
 import { findCommonValues } from "../functions/findCommonValues";
 import createHttpError from "http-errors";
 import { SearchScraperBody } from "../utils/types";
+import { SearchScraperParams } from "../scraper/searchScraper/types";
+import { searchScrape } from "../scraper/searchScraper/scraper";
 
 let scraperIsRunning = false;
 
@@ -72,7 +74,7 @@ export const runSearchScraper: RequestHandler<
 > = async (req, res, next) => {
   const { makeValue, modelValue } = req.body;
   try {
-    let modelData;
+    let modelData: Model[] = [];
     const makeData = await MakeModel.find({
       $or: [{ value: makeValue }, { commonValue: makeValue }],
     });
@@ -110,6 +112,27 @@ export const runSearchScraper: RequestHandler<
           "No models found with given value within scraped data"
         );
     }
+
+    const autogidasModelData = modelData.find(
+      (data) => data.dataSite === DataSite.AUTOGIDAS
+    );
+    const autopliusModelData = modelData.find(
+      (data) => data.dataSite === DataSite.AUTOPLIUS
+    );
+
+    const searchScraperParams: SearchScraperParams = {
+      autogidasParams: {
+        makeParam: autogidasMakeData,
+        modelParam: autogidasModelData,
+      },
+      autopliusParams: {
+        makeParam: autopliusMakeData,
+        modelParam: autopliusModelData,
+      },
+    };
+
+    const searchData = searchScrape(searchScraperParams);
+
     res.status(200).json({
       body: req.body,
       makes: makeData,
