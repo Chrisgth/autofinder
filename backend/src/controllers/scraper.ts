@@ -73,7 +73,14 @@ export const runSearchScraper: RequestHandler<
   unknown
 > = async (req, res, next) => {
   const { makeValue, modelValue } = req.body;
+
   try {
+    if (!makeValue)
+      throw createHttpError(
+        400,
+        "A search scraper query must at least have a make value"
+      );
+
     let modelData: Model[] = [];
     const makeData = await MakeModel.find({
       $or: [{ value: makeValue }, { commonValue: makeValue }],

@@ -8,10 +8,11 @@ export const searchScrape = async (searchParams: SearchScraperParams) => {
     const browser1 = await puppeteer.launch({ headless: false });
     const browser2 = await puppeteer.launch({ headless: false });
 
-    console.log(searchParams);
-
     const [autogidasData, autopliusData] = await Promise.all([
-      autogidasScraper({ browser: browser1 }),
+      autogidasScraper({
+        browser: browser1,
+        params: searchParams.autogidasParams,
+      }),
       autopliusScraper({ browser: browser2 }),
     ]);
 

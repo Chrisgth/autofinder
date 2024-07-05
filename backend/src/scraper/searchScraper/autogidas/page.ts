@@ -1,7 +1,11 @@
-import { PageProps } from "../../dataScraper/types";
-export const autogidasScraper = async ({ browser }: PageProps) => {
+import { SearchPageProps } from "../types";
+import { urlConstructor } from "./functions/urlConstructor";
+export const autogidasScraper = async ({
+  browser,
+  params,
+}: SearchPageProps) => {
   const page = await browser.newPage();
-  await page.goto("https://en.autoplius.lt/");
+  await page.goto(urlConstructor(params));
 
   // await page.close();
 };
